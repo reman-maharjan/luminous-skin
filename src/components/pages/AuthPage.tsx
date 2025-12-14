@@ -24,6 +24,9 @@ const AuthPage = () => {
     
     try {
       if (isLogin) {
+        if (!sessionStorage.getItem("redirectAfterLogin")) {
+          sessionStorage.setItem("redirectAfterLogin", "/profile");
+        }
         await login({
           email: formData.email,
           password: formData.password,

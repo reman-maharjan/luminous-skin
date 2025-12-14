@@ -32,7 +32,7 @@ export const TrendingProducts = () => {
               flying off our shelves.
             </p>
           </div>
-          <Link href="/shop">
+          <Link href="/products">
             <Button variant="outline" className="group">
               View All
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

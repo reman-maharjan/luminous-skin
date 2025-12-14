@@ -1,33 +1,46 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Trash2 } from "lucide-react";
+import { Heart, ShoppingBag, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { toast } from "sonner";
+import { useWishlist, useRemoveFromWishlist } from "@/hooks/use-wishlist";
+import { useAuth } from "@/hooks/use-auth";
 
 const WishlistPage = () => {
-  const [wishlistIds, setWishlistIds] = useState<string[]>(["1", "3", "5", "8"]);
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const { data: wishlistItems, isLoading } = useWishlist();
+  const { mutate: removeFromWishlist } = useRemoveFromWishlist();
 
-  const wishlistProducts = products.filter((p) => wishlistIds.includes(p.id));
+  // Redirect if not authenticated
+  if (!isAuthenticated && typeof window !== "undefined") {
+    router.push("/auth");
+    return null;
+  }
 
-  const removeFromWishlist = (productId: string) => {
-    setWishlistIds((ids) => ids.filter((id) => id !== productId));
-    toast("Removed from wishlist", {
-      description: "Product has been removed from your wishlist.",
-    });
+  const handleRemove = (wishlistItemId: number) => {
+    removeFromWishlist(wishlistItemId);
   };
 
-  const addToBag = (productId: string) => {
-    const product = products.find((p) => p.id === productId);
+  const addToBag = (productName: string) => {
     toast.success("Added to bag", {
-      description: `${product?.name} added to your bag.`,
+      description: `${productName} added to your bag.`,
     });
   };
 
-  if (wishlistProducts.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!wishlistItems || wishlistItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <main className="pt-28 pb-16">
@@ -66,31 +79,36 @@ const WishlistPage = () => {
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">My Wishlist</h1>
               <p className="text-muted-foreground mt-1">
-                {wishlistProducts.length} saved items
+                {wishlistItems.length} saved items
               </p>
             </div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {wishlistProducts.map((product, index) => (
+            {wishlistItems.map((item, index) => (
               <motion.div
-                key={product.id}
+                key={item.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className="group bg-card rounded-3xl overflow-hidden border border-border hover:shadow-medium transition-all"
               >
                 {/* Image */}
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/product/${item.product.slug || item.product.id}`}>
                   <div className="relative aspect-square overflow-hidden bg-secondary">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    {product.isBestSeller && (
+                    {item.product.thumbnail_image ? (
+                        <Image
+                          src={item.product.thumbnail_image}
+                          alt={item.product.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Image</div>
+                    )}
+                    {item.product.is_popular && (
                       <span className="absolute top-3 left-3 px-3 py-1 bg-rose text-rose-foreground text-xs font-medium rounded-full">
-                        BEST SELLER
+                        POPULAR
                       </span>
                     )}
                   </div>
@@ -99,21 +117,21 @@ const WishlistPage = () => {
                 {/* Content */}
                 <div className="p-4 space-y-3">
                   <div>
-                    <p className="text-xs text-muted-foreground">{product.brand}</p>
-                    <Link href={`/product/${product.id}`}>
+                    <p className="text-xs text-muted-foreground">{item.product.category?.name}</p>
+                    <Link href={`/product/${item.product.slug || item.product.id}`}>
                       <h3 className="font-medium line-clamp-2 hover:text-muted-foreground transition-colors">
-                        {product.name}
+                        {item.product.name}
                       </h3>
                     </Link>
                   </div>
 
                   <div className="flex items-baseline gap-2">
                     <span className="text-lg font-bold">
-                      ${product.price.toFixed(2)}
+                      ${parseFloat(item.product.price).toFixed(2)}
                     </span>
-                    {product.originalPrice && (
+                    {item.product.market_price && (
                       <span className="text-sm text-muted-foreground line-through">
-                        ${product.originalPrice.toFixed(2)}
+                        ${parseFloat(item.product.market_price).toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -121,7 +139,7 @@ const WishlistPage = () => {
                   {/* Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button
-                      onClick={() => addToBag(product.id)}
+                      onClick={() => addToBag(item.product.name)}
                       className="flex-1 gap-2"
                       size="sm"
                     >
@@ -131,7 +149,7 @@ const WishlistPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => removeFromWishlist(product.id)}
+                      onClick={() => handleRemove(item.id)}
                       className="h-9 w-9"
                     >
                       <Trash2 className="w-4 h-4" />

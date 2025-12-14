@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { categories } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,7 @@ export const Navbar = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const { openCart, totalItems } = useCart();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -142,7 +144,7 @@ export const Navbar = () => {
                   <Search className="w-5 h-5" />
                 </Button>
 
-                <Link href="/auth">
+                <Link href={isAuthenticated ? "/profile" : "/auth"}>
                   <Button variant="ghost" size="icon" className="hidden md:flex">
                     <User className="w-5 h-5" />
                   </Button>
@@ -191,7 +193,7 @@ export const Navbar = () => {
           >
             <div className="container-luxury py-6 space-y-4">
               <Link
-                href="/auth"
+                href={isAuthenticated ? "/profile" : "/auth"}
                 className="flex items-center gap-3 py-3 text-foreground hover:text-muted-foreground transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

@@ -46,7 +46,7 @@ export const FeaturedBrand = () => {
               Handpicked selections from our beauty experts. These products are loved by our team.
             </p>
           </div>
-          <Link href="/shop?is_featured=true">
+          <Link href="/products?is_featured=true">
             <Button variant="outline" className="group">
               Explore All
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

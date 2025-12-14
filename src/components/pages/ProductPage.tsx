@@ -26,6 +26,10 @@ import {
 import { toast } from "sonner";
 import { useProduct, useProductsWithParams } from "@/hooks/use-product";
 import { ProductCard } from "@/components/products/ProductCard";
+import { useWishlist, useAddToWishlist, useRemoveFromWishlist } from "@/hooks/use-wishlist";
+import { useAuth } from "@/hooks/use-auth";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 
 const ProductPage = () => {
   const params = useParams();
@@ -39,7 +43,37 @@ const ProductPage = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const router = useRouter();
+
+  const { isAuthenticated } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const { mutate: addToWishlist } = useAddToWishlist();
+  const { mutate: removeFromWishlist } = useRemoveFromWishlist();
+
+  const wishlistItem = useMemo(() => 
+    wishlist?.find((item) => item.product.id === product?.id), 
+    [wishlist, product?.id]
+  );
+
+  const isWishlisted = !!wishlistItem;
+
+  const handleWishlistClick = () => {
+    if (!product) return;
+    
+    if (!isAuthenticated) {
+      toast.error("Please login to use wishlist");
+      router.push("/auth");
+      return;
+    }
+
+    if (isWishlisted) {
+      if (wishlistItem) {
+        removeFromWishlist(wishlistItem.id);
+      }
+    } else {
+      addToWishlist(product.id);
+    }
+  };
 
   // Build images array from product data
   const images: string[] = product
@@ -75,7 +109,7 @@ const ProductPage = () => {
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <p className="text-muted-foreground">Product not found</p>
         <Button asChild>
-          <Link href="/shop">Back to Shop</Link>
+          <Link href="/products">Back to Shop</Link>
         </Button>
       </div>
     );
@@ -98,7 +132,7 @@ const ProductPage = () => {
             </Link>
             <ChevronRight className="w-4 h-4" />
             <Link
-              href="/shop"
+              href="/products"
               className="hover:text-foreground transition-colors"
             >
               Shop
@@ -275,7 +309,7 @@ const ProductPage = () => {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  onClick={handleWishlistClick}
                   className="h-14 w-14"
                 >
                   <Heart

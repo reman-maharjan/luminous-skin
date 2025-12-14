@@ -58,7 +58,7 @@ export const BestSellers = () => {
           viewport={{ once: true }}
           className="text-center"
         >
-          <Link href="/shop?is_popular=true">
+          <Link href="/products?is_popular=true">
             <Button variant="outline" size="lg" className="group">
               View All Best Sellers
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

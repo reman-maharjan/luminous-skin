@@ -1,3 +1,5 @@
+"use client";
+
 import { HeroSection } from "@/components/home/HeroSection";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { FeaturedBrand } from "@/components/home/FeaturedBrand";

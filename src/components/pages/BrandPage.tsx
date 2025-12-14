@@ -96,7 +96,7 @@ const BrandPage = () => {
                 <p className="text-muted-foreground mb-4">
                   No products available for this brand yet.
                 </p>
-                <Link href="/shop">
+                <Link href="/products">
                   <Button>Browse All Products</Button>
                 </Link>
               </div>
@@ -160,7 +160,7 @@ const BrandPage = () => {
           <div className="container-luxury">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold">Explore Categories</h2>
-              <Link href="/shop">
+              <Link href="/products">
                 <Button variant="outline" className="gap-2">
                   View All
                   <ArrowRight className="w-4 h-4" />

@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Heart, Plus } from "lucide-react";
 import { Product } from "@/types/product";
 import Link from "next/link";
 import Image from "next/image";
+import { useWishlist, useAddToWishlist, useRemoveFromWishlist } from "@/hooks/use-wishlist";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
@@ -14,7 +18,42 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const router = useRouter();
+  
+  const { isAuthenticated } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const { mutate: addToWishlist } = useAddToWishlist();
+  const { mutate: removeFromWishlist } = useRemoveFromWishlist();
+
+  const wishlistItem = useMemo(() => 
+    wishlist?.find((item) => item.product.id === product.id), 
+    [wishlist, product.id]
+  );
+
+  const isWishlisted = !!wishlistItem;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent link navigation
+    
+    if (!isAuthenticated) {
+      toast.error("Please login to use wishlist");
+      router.push("/auth");
+      return;
+    }
+
+    if (isWishlisted) {
+      if (wishlistItem) {
+        removeFromWishlist(wishlistItem.id);
+      }
+    } else {
+      addToWishlist(product.id, {
+        onSuccess: () => {
+             // Optional: add optimistic update logic if needed, 
+             // but reacting to invalidation is safer
+        }
+      });
+    }
+  };
 
   const price = parseFloat(product.price);
   const marketPrice = product.market_price ? parseFloat(product.market_price) : null;
@@ -72,10 +111,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
             {/* Wishlist Button */}
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                setIsWishlisted(!isWishlisted);
-              }}
+              onClick={handleWishlistClick}
               className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                 isWishlisted 
                   ? "bg-foreground text-background" 
