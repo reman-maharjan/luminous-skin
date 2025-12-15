@@ -82,28 +82,28 @@ const ProfilePage = () => {
         <div className="absolute top-0 left-0 w-full h-[500px] bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-rose/5 rounded-full blur-3xl pointer-events-none" />
 
-      <main className="pt-32 pb-20 relative z-10 container-luxury">
+      <main className="pt-24 md:pt-32 pb-20 relative z-10 container-luxury">
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
             <h1 className="text-3xl md:text-4xl font-serif mb-2">My Profile</h1>
-            <p className="text-muted-foreground mb-12">Manage your account settings and preferences.</p>
+            <p className="text-muted-foreground mb-8 md:mb-12">Manage your account settings and preferences.</p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-[280px_1fr] gap-12">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-8 lg:gap-12">
           
           {/* Sidebar Navigation */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-8"
+            className="space-y-6 md:space-y-8"
           >
             {/* User Snapshot */}
-            <div className="flex items-center gap-4 mb-8">
-                <div className="relative group cursor-pointer">
+            <div className="flex items-center gap-4 mb-4 md:mb-8">
+                <div className="relative group cursor-pointer shrink-0">
                     <Avatar className="h-16 w-16 border-2 border-background shadow-soft">
                         <AvatarImage src="" alt={user.first_name} />
                         <AvatarFallback className="bg-primary/10 text-primary text-xl font-medium">{initials}</AvatarFallback>
@@ -119,28 +119,28 @@ const ProfilePage = () => {
             </div>
 
             {/* Navigation Menu */}
-            <nav className="space-y-1">
+            <nav className="flex lg:block gap-2 overflow-x-auto pb-2 lg:pb-0 lg:space-y-1 hide-scrollbar">
                 {menuItems.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => setActiveTab(item.id)}
                         className={cn(
-                            "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group",
+                            "flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group whitespace-nowrap lg:w-full shrink-0",
                             activeTab === item.id 
                                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
-                                : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                                : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground bg-secondary/30 lg:bg-transparent"
                         )}
                     >
                         <div className="flex items-center gap-3">
                             <item.icon className={cn("w-4 h-4", activeTab === item.id ? "opacity-100" : "opacity-70")} />
                             {item.label}
                         </div>
-                        {activeTab === item.id && <ChevronRight className="w-4 h-4 opacity-50" />}
+                        {activeTab === item.id && <ChevronRight className="w-4 h-4 opacity-50 hidden lg:block" />}
                     </button>
                 ))}
             </nav>
 
-            <div className="pt-8 mt-8 border-t border-border/50">
+            <div className="pt-4 lg:pt-8 mt-4 lg:mt-8 border-t border-border/50">
                  <Button 
                     variant="ghost" 
                     className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/5 px-4"

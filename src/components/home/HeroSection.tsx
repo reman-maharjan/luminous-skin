@@ -15,7 +15,7 @@ export const HeroSection = () => {
         <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-rose/40 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="container-luxury relative z-10">
         <div className="grid lg:grid-cols-2 gap-96 items-center">
           {/* Left Content */}
           <motion.div

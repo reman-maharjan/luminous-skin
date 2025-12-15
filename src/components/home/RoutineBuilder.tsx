@@ -48,7 +48,7 @@ export const RoutineBuilder = () => {
             </Link>
 
             {/* Stats */}
-            <div className="flex items-center gap-8">
+            <div className="flex items-center py-8 gap-8">
               <div>
                 <p className="text-2xl font-bold">10K+</p>
                 <p className="text-sm text-muted-foreground">Routines Created</p>

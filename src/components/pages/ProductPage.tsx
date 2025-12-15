@@ -131,11 +131,11 @@ const ProductPage = () => {
       <main className="pt-28 pb-16">
         <div className="container-luxury">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+          <nav className="flex items-center flex-wrap gap-2 text-sm text-muted-foreground mb-8">
             <Link href="/" className="hover:text-foreground transition-colors">
               Home
             </Link>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 shrink-0" />
             <Link
               href="/products"
               className="hover:text-foreground transition-colors"
@@ -144,7 +144,7 @@ const ProductPage = () => {
             </Link>
             {product.category && (
               <>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 shrink-0" />
                 <Link
                   href={`/category/${product.category.slug}`}
                   className="hover:text-foreground transition-colors"
@@ -153,11 +153,11 @@ const ProductPage = () => {
                 </Link>
               </>
             )}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 shrink-0" />
             <span className="text-foreground">{product.name}</span>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-12 mb-20">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-20">
             {/* Image Gallery */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -190,12 +190,12 @@ const ProductPage = () => {
 
               {/* Thumbnails */}
               {images.length > 1 && (
-                <div className="flex gap-3">
+                <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
                   {images.map((img, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`w-20 h-20 rounded-xl overflow-hidden transition-all relative ${
+                      className={`w-20 h-20 rounded-xl overflow-hidden transition-all relative shrink-0 ${
                         selectedImage === index
                           ? "ring-2 ring-primary ring-offset-2"
                           : "opacity-60 hover:opacity-100"
@@ -220,7 +220,7 @@ const ProductPage = () => {
               className="space-y-6"
             >
               {/* Category & Badges */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center flex-wrap gap-3">
                 {product.category && (
                   <span className="text-sm text-muted-foreground">
                     {product.category.name}
@@ -242,7 +242,7 @@ const ProductPage = () => {
               <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
 
               {/* Price */}
-              <div className="flex items-baseline gap-3">
+              <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-3xl font-bold">
                   ${price.toFixed(2)}
                 </span>
@@ -284,8 +284,8 @@ const ProductPage = () => {
               )}
 
               {/* Quantity & Add to Cart */}
-              <div className="flex items-center gap-4 pt-4">
-                <div className="flex items-center gap-3 bg-secondary rounded-xl p-1">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <div className="flex items-center gap-3 bg-secondary rounded-xl p-1 w-fit">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
@@ -301,32 +301,34 @@ const ProductPage = () => {
                   </button>
                 </div>
 
-                <Button
-                  onClick={handleAddToCart}
-                  className="flex-1 gap-2"
-                  size="lg"
-                  disabled={product.track_stock && (!product.stock || product.stock < 1)}
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  Add to Bag
-                </Button>
+                <div className="flex gap-3 flex-1">
+                  <Button
+                    onClick={handleAddToCart}
+                    className="flex-1 gap-2"
+                    size="lg"
+                    disabled={product.track_stock && (!product.stock || product.stock < 1)}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    Add to Bag
+                  </Button>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleWishlistClick}
-                  className="h-14 w-14"
-                >
-                  <Heart
-                    className={`w-5 h-5 ${
-                      isWishlisted ? "fill-rose-foreground text-rose-foreground" : ""
-                    }`}
-                  />
-                </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleWishlistClick}
+                    className="h-12 w-12 sm:h-11 sm:w-11" // Adjusted size slightly to match LG button if needed, but keeping consistent
+                  >
+                    <Heart
+                      className={`w-5 h-5 ${
+                        isWishlisted ? "fill-rose-foreground text-rose-foreground" : ""
+                      }`}
+                    />
+                  </Button>
+                </div>
               </div>
 
               {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border">
                 {product.fast_shipping && (
                   <div className="flex items-center gap-2 text-sm">
                     <Truck className="w-5 h-5 text-muted-foreground" />
