@@ -132,12 +132,12 @@ export default function ProfilePage() {
         <div className="absolute bottom-0 left-[-10%] w-[40vw] h-[40vh] bg-primary/5 rounded-full blur-[100px] opacity-30" />
       </div>
 
-      <main className="container mx-auto pt-24 pb-20 max-w-6xl">
+      <main className="container-luxury pt-24 pb-20">
         {/* Header Section */}
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10 md:mb-16"
+            className="mb-6 md:mb-10"
         >
             <h1 className="text-3xl md:text-4xl font-light tracking-tight text-foreground">Settings</h1>
             <p className="text-muted-foreground mt-2 text-sm md:text-base font-light">
